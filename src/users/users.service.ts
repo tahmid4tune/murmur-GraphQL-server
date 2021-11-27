@@ -10,8 +10,9 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  async create(createUserInput: CreateUserInput) {
+    const user: User = this.userRepository.create(createUserInput);
+    return await this.userRepository.save(user);
   }
 
   async findAll(): Promise<User[]> {

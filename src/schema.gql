@@ -2,32 +2,63 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Post {
+  """Post ID"""
+  id: Int!
+
+  """Author of the post"""
+  author: User!
+
+  """Author ID"""
+  authorId: Int!
+  text: String!
+}
+
 type User {
   """User ID"""
   id: Int!
 
   """User Name"""
   name: String!
+  posts: [Post!]
 }
 
 type Query {
   users: [User!]!
   user(id: Int!): User!
+  posts: [Post!]!
+  post(id: Int!): Post!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
+  createPost(createPostInput: CreatePostInput!): Post!
+  updatePost(updatePostInput: UpdatePostInput!): Post!
+  removePost(id: Int!): Post!
 }
 
 input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """User Name"""
+  name: String!
 }
 
 input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  """User Name"""
+  name: String
+  id: Int!
+}
+
+input CreatePostInput {
+  """Author ID"""
+  authorId: Int!
+  text: String!
+}
+
+input UpdatePostInput {
+  """Author ID"""
+  authorId: Int
+  text: String
   id: Int!
 }
