@@ -6,5 +6,5 @@
 3. Create a new database schema named: 'insta_mini' in your MySQL Database
 4. Update values in the .env file based on your own MySQL db connection string
 5. Run following set of commands from the root directory of the project folder:
-    > yarn install
-    > yarn dev
+    i. > yarn install
+    ii. > yarn dev
