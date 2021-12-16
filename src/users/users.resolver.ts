@@ -3,6 +3,9 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { PaginationInput } from '../common/dto/pagination.input';
+import { UserListOutput } from './dto/users-list.output';
+import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -13,9 +16,9 @@ export class UsersResolver {
     return this.usersService.create(createUserInput);
   }
 
-  @Query(() => [User], { name: 'users' })
-  findAll() {
-    return this.usersService.findAll();
+  @Query(() => UserListOutput, { name: 'users' })
+  findAll(@Args('paginationInput') paginationInput: PaginationInput) {
+    return this.usersService.findAll(paginationInput);
   }
 
   @Query(() => User, { name: 'user' })
@@ -28,7 +31,7 @@ export class UsersResolver {
     return this.usersService.update(updateUserInput.id, updateUserInput);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => EntityDeletedOutput)
   removeUser(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.remove(id);
   }

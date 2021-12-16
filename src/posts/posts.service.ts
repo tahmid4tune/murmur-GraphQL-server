@@ -8,12 +8,12 @@ import { Post } from './entities/post.entity';
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
   ) {}
 
   async create(createPostInput: CreatePostInput) {
     const post: Post = this.postRepository.create(createPostInput);
-
     return await this.postRepository.save(post);
   }
 

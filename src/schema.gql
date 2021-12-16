@@ -20,23 +20,53 @@ type User {
 
   """User Name"""
   name: String!
+
+  """User Password"""
+  password: String!
   posts: [Post!]
 }
 
-type Query {
+type UserListOutput {
+  """Total number of records"""
+  total: Int!
+
+  """List of users"""
   users: [User!]!
+}
+
+type EntityDeletedOutput {
+  """Deleted"""
+  data: String!
+}
+
+type LoginResponse {
+  access_token: String!
+}
+
+type Query {
+  users(paginationInput: PaginationInput!): UserListOutput!
   user(id: Int!): User!
   posts: [Post!]!
   post(id: Int!): Post!
+  me: User!
+}
+
+input PaginationInput {
+  """Current page number"""
+  page: Int = 1
+
+  """Data count per page"""
+  perPage: Int = 10
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
+  removeUser(id: Int!): EntityDeletedOutput!
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   removePost(id: Int!): Post!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
 }
 
 input CreateUserInput {
@@ -46,7 +76,7 @@ input CreateUserInput {
 
 input UpdateUserInput {
   """User Name"""
-  name: String
+  name: String!
   id: Int!
 }
 
@@ -61,4 +91,9 @@ input UpdatePostInput {
   authorId: Int
   text: String
   id: Int!
+}
+
+input LoginUserInput {
+  name: String!
+  password: String!
 }

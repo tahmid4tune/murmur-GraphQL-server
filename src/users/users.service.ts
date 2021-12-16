@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
+import { PaginationInput } from '../common/dto/pagination.input';
+import { getPaginationInfo } from '../common/utils/pagination.util';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { UserListOutput } from './dto/users-list.output';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -14,20 +17,35 @@ export class UsersService {
     const user: User = this.userRepository.create(createUserInput);
     return await this.userRepository.save(user);
   }
-
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  //Need to send totalcount too.
+  async findAll(paginationInput: PaginationInput): Promise<UserListOutput> {
+    const [users, count] = await this.userRepository.findAndCount({
+      ...getPaginationInfo(paginationInput),
+    });
+    return { users: users, total: count };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<User> {
+    return await this.userRepository.findOneOrFail(id);
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async findByUserName(name: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { name: name } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(id: number, updateUserInput: UpdateUserInput) {
+    const user: User = await this.userRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User not found with ID: ${id}`);
+    }
+    return await this.userRepository.save(updateUserInput);
+  }
+
+  async remove(id: number): Promise<DeleteResult> {
+    const user: User = await this.userRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User not found with ID: ${id}`);
+    }
+    return await this.userRepository.delete(id);
   }
 }

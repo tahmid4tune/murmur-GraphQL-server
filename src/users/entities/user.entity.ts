@@ -13,6 +13,10 @@ export class User {
   @Field({ description: 'User Name' })
   name: string;
 
+  @Column()
+  @Field({ description: 'User Password' })
+  password: string;
+
   @OneToMany(() => Post, (posts) => posts.author, { nullable: true })
   @Field((type) => [Post], { nullable: true })
   posts?: Post[];

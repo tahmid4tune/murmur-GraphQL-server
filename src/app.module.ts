@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { db_config } from './common/config/db.config';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,8 +25,16 @@ import { PostsModule } from './posts/posts.module';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      include: [UsersModule, PostsModule, AuthModule],
+      introspection: true,
+      context: ({ req }) => ({ headers: req.headers }),
+      formatError: (error) => {
+        console.error('error', error);
+        return error;
+      },
     }),
     PostsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
