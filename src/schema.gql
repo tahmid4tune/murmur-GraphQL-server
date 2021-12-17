@@ -72,23 +72,25 @@ type Mutation {
 input CreateUserInput {
   """User Name"""
   name: String!
+
+  """User Password"""
+  password: String!
 }
 
 input UpdateUserInput {
   """User Name"""
   name: String!
+
+  """User Password"""
+  password: String
   id: Int!
 }
 
 input CreatePostInput {
-  """Author ID"""
-  authorId: Int!
   text: String!
 }
 
 input UpdatePostInput {
-  """Author ID"""
-  authorId: Int
   text: String
   id: Int!
 }

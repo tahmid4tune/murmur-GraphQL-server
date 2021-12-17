@@ -9,3 +9,40 @@
 
 - yarn install
 - yarn dev
+
+# End-points and execution instructions
+
+########################### Login ########################### 
+# Mutation
+mutation login ($input: LoginUserInput!) {
+  login(loginUserInput: $input) {
+  	access_token 
+  }
+}
+
+# Query Variables
+{
+  "input": {
+  	"name":"Tahmid",
+  	"password":"1234"
+	}
+}
+########################### Login ########################### 
+
+########################### User Create ########################### 
+# Mutation
+mutation createUser ($input: CreateUserInput!) {
+  createUser(createUserInput:$input) {
+    name
+  }
+}
+# Query Variables
+{
+  "input": {
+  	"name":"Tahmid",
+  	"password":"1234"
+	}
+}
+
+########################### User Create ########################### 
+

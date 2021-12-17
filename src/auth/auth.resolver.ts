@@ -16,7 +16,7 @@ export class AuthResolver {
   }
 
   @Query(() => User)
-  @UseGuards(new AuthGuard())
+  @UseGuards(AuthGuard)
   me(@Context('user') user: User) {
     return user;
   }
