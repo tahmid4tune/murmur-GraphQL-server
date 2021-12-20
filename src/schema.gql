@@ -65,7 +65,7 @@ type Mutation {
   removeUser(id: Int!): EntityDeletedOutput!
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
-  removePost(id: Int!): Post!
+  removePost(id: Int!): EntityDeletedOutput!
   login(loginUserInput: LoginUserInput!): LoginResponse!
 }
 

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
 import { User } from '../users/entities/user.entity';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
@@ -35,9 +36,10 @@ export class PostsService {
     return await this.postRepository.save(post);
   }
 
-  async remove(id: number, author: User): Promise<Post> {
+  async remove(id: number, author: User): Promise<EntityDeletedOutput> {
     const post: Post = await this.validateRequest(id, author);
-    return await this.postRepository.remove(post);
+    await this.postRepository.remove(post);
+    return { data: 'Post deleted' };
   }
 
   async validateRequest(postId: number, author: User): Promise<Post> {

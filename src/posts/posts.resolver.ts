@@ -6,6 +6,7 @@ import { UpdatePostInput } from './dto/update-post.input';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { LoggedInUser } from '../auth/interface/current-user.interface';
+import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -39,7 +40,7 @@ export class PostsResolver {
     return this.postsService.update(updatePostInput, user);
   }
 
-  @Mutation(() => Post)
+  @Mutation(() => EntityDeletedOutput)
   @UseGuards(AuthGuard)
   removePost(
     @Context() { user }: LoggedInUser,

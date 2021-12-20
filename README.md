@@ -28,6 +28,11 @@ mutation login ($input: LoginUserInput!) {
 	}
 } 
 
+###Auth Header for all guarded requests
+{
+  "authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlRhaG1pZCIsImlhdCI6MTYzOTgxMTc4NH0.Tb8gGOIhR9YbbGN5nGpVJNsF2kC040vGEATBi0cn0Is"
+}
+
 # User Create 
 ####Mutation
 mutation createUser ($input: CreateUserInput!) {
@@ -41,4 +46,16 @@ mutation createUser ($input: CreateUserInput!) {
   	"name":"Tahmid",
   	"password":"1234"
 	}
+}
+
+# Post Remove
+####Mutation
+mutation removePost($id: Int!){
+  removePost(id:$id) {
+    data
+  }
+}
+####Query Variables
+{
+  "id": 1
 }
