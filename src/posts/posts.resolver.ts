@@ -7,6 +7,8 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { LoggedInUser } from '../auth/interface/current-user.interface';
 import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
+import { PaginationInput } from '../common/dto/pagination.input';
+import { PostListOutput } from './dto/post-list-output';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -21,9 +23,10 @@ export class PostsResolver {
     return await this.postsService.create(createPostInput, user);
   }
 
-  @Query(() => [Post], { name: 'posts' })
-  findAll() {
-    return this.postsService.findAll();
+  @Query(() => PostListOutput, { name: 'posts' })
+  @UseGuards(AuthGuard)
+  findAll(@Args('paginationInput') paginationInput: PaginationInput) {
+    return this.postsService.findAll(paginationInput);
   }
 
   @Query(() => Post, { name: 'post' })

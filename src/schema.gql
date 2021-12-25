@@ -39,6 +39,14 @@ type EntityDeletedOutput {
   data: String!
 }
 
+type PostListOutput {
+  """Total number of records"""
+  total: Int!
+
+  """List of posts"""
+  posts: [Post!]!
+}
+
 type LoginResponse {
   access_token: String!
 }
@@ -46,7 +54,7 @@ type LoginResponse {
 type Query {
   users(paginationInput: PaginationInput!): UserListOutput!
   user(id: Int!): User!
-  posts: [Post!]!
+  posts(paginationInput: PaginationInput!): PostListOutput!
   post(id: Int!): Post!
   me: User!
 }

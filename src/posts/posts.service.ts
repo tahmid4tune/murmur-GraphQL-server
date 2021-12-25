@@ -2,8 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
+import { PaginationInput } from '../common/dto/pagination.input';
+import { getPaginationInfo } from '../common/utils/pagination.util';
 import { User } from '../users/entities/user.entity';
 import { CreatePostInput } from './dto/create-post.input';
+import { PostListOutput } from './dto/post-list-output';
 import { UpdatePostInput } from './dto/update-post.input';
 import { Post } from './entities/post.entity';
 
@@ -22,8 +25,12 @@ export class PostsService {
     return await this.postRepository.save(post);
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findAll(paginationInput: PaginationInput): Promise<PostListOutput> {
+    const [posts, count] = await this.postRepository.findAndCount({
+      ...getPaginationInfo(paginationInput),
+      relations: ['author'],
+    });
+    return { posts: posts, total: count };
   }
 
   async findOne(id: number) {
