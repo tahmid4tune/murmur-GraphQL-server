@@ -25,8 +25,11 @@ export class PostsResolver {
 
   @Query(() => PostListOutput, { name: 'posts' })
   @UseGuards(AuthGuard)
-  findAll(@Args('paginationInput') paginationInput: PaginationInput) {
-    return this.postsService.findAll(paginationInput);
+  findAll(
+    @Context() { user }: LoggedInUser,
+    @Args('paginationInput') paginationInput: PaginationInput,
+  ) {
+    return this.postsService.findAll(paginationInput, user);
   }
 
   @Query(() => Post, { name: 'post' })

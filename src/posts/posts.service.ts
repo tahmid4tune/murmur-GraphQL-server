@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
 import { PaginationInput } from '../common/dto/pagination.input';
 import { getPaginationInfo } from '../common/utils/pagination.util';
+import { FollowsService } from '../follows/follows.service';
 import { User } from '../users/entities/user.entity';
 import { CreatePostInput } from './dto/create-post.input';
 import { PostListOutput } from './dto/post-list-output';
@@ -15,6 +16,7 @@ export class PostsService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+    private readonly followService: FollowsService,
   ) {}
 
   async create(createPostInput: CreatePostInput, author: User): Promise<Post> {
@@ -25,10 +27,18 @@ export class PostsService {
     return await this.postRepository.save(post);
   }
 
-  async findAll(paginationInput: PaginationInput): Promise<PostListOutput> {
+  async findAll(
+    paginationInput: PaginationInput,
+    user: User,
+  ): Promise<PostListOutput> {
+    const followedUsers: User[] =
+      await this.followService.getUsersFollowedByThisUser(user);
+    followedUsers.push(user);
     const [posts, count] = await this.postRepository.findAndCount({
       ...getPaginationInfo(paginationInput),
       relations: ['author'],
+      where: { authorId: In(followedUsers.map((user) => user.id)) },
+      order: { createdAt: 'DESC' },
     });
     return { posts: posts, total: count };
   }

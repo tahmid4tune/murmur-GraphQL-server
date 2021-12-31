@@ -16,7 +16,7 @@ export const db_config = (
   extra: {
     charset: 'utf8mb4_unicode_ci',
   },
-  logging: false,
+  logging: true,
   entities: [`dist/**/entities/*.{ts,js}`],
   migrations: [`${__dirname}/../**/migrations/*.{ts,js}`],
   subscribers: [`${__dirname}/../**/subscribers/*.{ts,js}`],
