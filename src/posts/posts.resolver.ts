@@ -25,33 +25,47 @@ export class PostsResolver {
 
   @Query(() => PostListOutput, { name: 'posts' })
   @UseGuards(AuthGuard)
-  findAll(
+  async findAll(
     @Context() { user }: LoggedInUser,
     @Args('paginationInput') paginationInput: PaginationInput,
   ) {
-    return this.postsService.findAll(paginationInput, user);
+    return await this.postsService.findAll(paginationInput, user);
+  }
+
+  @Query(() => PostListOutput, { name: 'postsByUser' })
+  @UseGuards(AuthGuard)
+  async findPostsByUser(
+    @Context() { user }: LoggedInUser,
+    @Args('id', { type: () => Int }) userId: number,
+    @Args('paginationInput') paginationInput: PaginationInput,
+  ) {
+    return await this.postsService.getPostsByUser(
+      paginationInput,
+      userId,
+      user,
+    );
   }
 
   @Query(() => Post, { name: 'post' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.postsService.findOne(id);
+  async findOne(@Args('id', { type: () => Int }) id: number) {
+    return await this.postsService.findOne(id);
   }
 
   @Mutation(() => Post)
   @UseGuards(AuthGuard)
-  updatePost(
+  async updatePost(
     @Context() { user }: LoggedInUser,
     @Args('updatePostInput') updatePostInput: UpdatePostInput,
   ) {
-    return this.postsService.update(updatePostInput, user);
+    return await this.postsService.update(updatePostInput, user);
   }
 
   @Mutation(() => EntityDeletedOutput)
   @UseGuards(AuthGuard)
-  removePost(
+  async removePost(
     @Context() { user }: LoggedInUser,
     @Args('id', { type: () => Int }) id: number,
   ) {
-    return this.postsService.remove(id, user);
+    return await this.postsService.remove(id, user);
   }
 }

@@ -67,6 +67,7 @@ type Query {
   users(paginationInput: PaginationInput!): UserListOutput!
   user(id: Int!): User!
   posts(paginationInput: PaginationInput!): PostListOutput!
+  postsByUser(paginationInput: PaginationInput!, id: Int!): PostListOutput!
   post(id: Int!): Post!
   me: User!
 }

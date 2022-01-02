@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
@@ -38,6 +42,26 @@ export class PostsService {
       ...getPaginationInfo(paginationInput),
       relations: ['author'],
       where: { authorId: In(followedUsers.map((user) => user.id)) },
+      order: { createdAt: 'DESC' },
+    });
+    return { posts: posts, total: count };
+  }
+
+  async getPostsByUser(
+    paginationInput: PaginationInput,
+    userId: number,
+    currentUser: User,
+  ): Promise<PostListOutput> {
+    const followedUsers: User[] =
+      await this.followService.getUsersFollowedByThisUser(currentUser);
+    followedUsers.push(currentUser);
+    if (!followedUsers.filter((user) => user.id === userId).length) {
+      throw new UnauthorizedException();
+    }
+    const [posts, count] = await this.postRepository.findAndCount({
+      ...getPaginationInfo(paginationInput),
+      relations: ['author'],
+      where: { authorId: userId },
       order: { createdAt: 'DESC' },
     });
     return { posts: posts, total: count };
