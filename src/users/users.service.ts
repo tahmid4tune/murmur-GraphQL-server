@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { PaginationInput } from '../common/dto/pagination.input';
 import { getPaginationInfo } from '../common/utils/pagination.util';
+import { FollowsService } from '../follows/follows.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserListOutput } from './dto/users-list.output';
@@ -27,6 +28,13 @@ export class UsersService {
 
   async findOne(id: number): Promise<User> {
     return await this.userRepository.findOne(id);
+  }
+
+  async getUserWithFollowStats(id: number): Promise<User> {
+    return await this.userRepository.findOne({
+      where: { id: id },
+      relations: ['followed_by', 'follows'],
+    });
   }
 
   async findByUserName(name: string): Promise<User> {

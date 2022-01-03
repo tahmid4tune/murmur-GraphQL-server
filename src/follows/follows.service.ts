@@ -2,12 +2,14 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
+import { FollowStatOutput } from './dto/follow-stat-output';
 import { Follow } from './entities/follow.entity';
 
 @Injectable()
@@ -24,6 +26,31 @@ export class FollowsService {
       relations: ['followed_by', 'follows'],
     });
     return followRecords.map((follow) => follow.follows);
+  }
+
+  async getUsersFollowStats(
+    currentUser: User,
+    userId: number,
+  ): Promise<FollowStatOutput> {
+    const user: User = await this.userService.findOne(userId);
+    if (!user) {
+      throw new BadRequestException();
+    }
+    if (currentUser.id != userId) {
+      const followRecord: Follow = await this.getFollowRecord(
+        user,
+        currentUser,
+      );
+      if (!followRecord) {
+        throw new UnauthorizedException();
+      }
+    }
+    const userWithFollowStats: User =
+      await this.userService.getUserWithFollowStats(userId);
+    return {
+      followedBy: userWithFollowStats?.followed_by?.length || 0,
+      follows: userWithFollowStats?.follows?.length || 0,
+    };
   }
 
   async doFollow(user: User, id: number): Promise<Follow> {

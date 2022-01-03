@@ -59,6 +59,14 @@ type PostListOutput {
   posts: [Post!]!
 }
 
+type FollowStatOutput {
+  """Number of users followed by this user"""
+  follows: Int!
+
+  """Number of users who follow this user"""
+  followedBy: Int!
+}
+
 type LoginResponse {
   access_token: String!
 }
@@ -69,6 +77,7 @@ type Query {
   posts(paginationInput: PaginationInput!): PostListOutput!
   postsByUser(paginationInput: PaginationInput!, id: Int!): PostListOutput!
   post(id: Int!): Post!
+  followStat(id: Int!): FollowStatOutput!
   me: User!
 }
 
