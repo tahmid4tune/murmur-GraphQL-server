@@ -32,9 +32,6 @@ type User {
 
   """User Name"""
   name: String!
-
-  """User Password"""
-  password: String!
   posts: [Post!]
 }
 
@@ -67,6 +64,18 @@ type FollowStatOutput {
   followedBy: Int!
 }
 
+type FollowedByUser {
+  """User ID"""
+  id: Int!
+
+  """User Name"""
+  name: String!
+  posts: [Post!]
+
+  """Is current user following this user"""
+  isFollowing: Boolean!
+}
+
 type LoginResponse {
   access_token: String!
 }
@@ -78,6 +87,8 @@ type Query {
   postsByUser(paginationInput: PaginationInput!, id: Int!): PostListOutput!
   post(id: Int!): Post!
   followStat(id: Int!): FollowStatOutput!
+  followingUserList(paginationInput: PaginationInput!): [User!]!
+  followedByUserList(paginationInput: PaginationInput!): [FollowedByUser!]!
   me: User!
 }
 

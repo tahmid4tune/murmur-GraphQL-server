@@ -16,8 +16,6 @@ export class User {
   name: string;
 
   @Column()
-  @Field({ description: 'User Password' })
-  @Exclude({ toPlainOnly: true })
   password: string;
 
   @OneToMany(() => Post, (posts) => posts.author, { nullable: true })
