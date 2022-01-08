@@ -35,12 +35,24 @@ type User {
   posts: [Post!]
 }
 
+type UserWithFollow {
+  """User ID"""
+  id: Int!
+
+  """User Name"""
+  name: String!
+  posts: [Post!]
+
+  """Is current user already following this user"""
+  isFollowing: Boolean!
+}
+
 type UserListOutput {
   """Total number of records"""
   total: Int!
 
   """List of users"""
-  users: [User!]!
+  users: [UserWithFollow!]!
 }
 
 type EntityDeletedOutput {
@@ -81,7 +93,7 @@ type LoginResponse {
 }
 
 type Query {
-  users(paginationInput: PaginationInput!): UserListOutput!
+  users(name: String!, paginationInput: PaginationInput!): UserListOutput!
   user(id: Int!): User!
   posts(paginationInput: PaginationInput!): PostListOutput!
   postsByUser(paginationInput: PaginationInput!, id: Int!): PostListOutput!

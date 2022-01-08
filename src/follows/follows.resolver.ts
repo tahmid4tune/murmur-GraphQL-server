@@ -24,8 +24,11 @@ export class FollowsResolver {
   }
 
   @Mutation(() => EntityDeletedOutput)
-  async unfollowUser(@Args('id', { type: () => Int }) id: number) {
-    return await this.followService.unFollow(id);
+  async unfollowUser(
+    @Context() { user }: LoggedInUser,
+    @Args('id', { type: () => Int }) id: number,
+  ) {
+    return await this.followService.unFollow(user, id);
   }
 
   @Query(() => FollowStatOutput, { name: 'followStat' })

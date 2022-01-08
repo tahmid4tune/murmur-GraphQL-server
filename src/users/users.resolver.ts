@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
@@ -6,6 +6,9 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { PaginationInput } from '../common/dto/pagination.input';
 import { UserListOutput } from './dto/users-list.output';
 import { EntityDeletedOutput } from '../common/dto/entity-deletion.output';
+import { AuthGuard } from '../auth/auth.guard';
+import { UseGuards } from '@nestjs/common';
+import { LoggedInUser } from '../auth/interface/current-user.interface';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -17,8 +20,13 @@ export class UsersResolver {
   }
 
   @Query(() => UserListOutput, { name: 'users' })
-  findAll(@Args('paginationInput') paginationInput: PaginationInput) {
-    return this.usersService.findAll(paginationInput);
+  @UseGuards(AuthGuard)
+  findAll(
+    @Context() { user }: LoggedInUser,
+    @Args('paginationInput') paginationInput: PaginationInput,
+    @Args('name') name: string,
+  ) {
+    return this.usersService.findAll(paginationInput, name, user);
   }
 
   @Query(() => User, { name: 'user' })

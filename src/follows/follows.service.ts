@@ -11,7 +11,6 @@ import { PaginationInput } from '../common/dto/pagination.input';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { FollowStatOutput } from './dto/follow-stat-output';
-import { FollowedByUser } from './dto/followed-by-output';
 import { Follow } from './entities/follow.entity';
 
 @Injectable()
@@ -20,7 +19,7 @@ export class FollowsService {
     @InjectRepository(Follow)
     private readonly followRepository: Repository<Follow>,
     private readonly userService: UsersService,
-  ) {}
+  ) { }
 
   async getUsersFollowedByThisUser(user: User): Promise<User[]> {
     const followRecords: Follow[] = await this.followRepository.find({
@@ -67,9 +66,15 @@ export class FollowsService {
     if (!followRecords?.length) {
       return [];
     }
-    return await this.userService.findUsersByIds(
-      followRecords.map((follow) => follow.id),
+    const followRecordIds = followRecords.map((follow) => follow.id);
+    const followRecordEntities: Follow[] = await this.followRepository.find({
+      where: { id: In(followRecordIds) },
+      relations: ['follows'],
+    });
+    const alreadyFollowing: number[] = followRecordEntities.map(
+      (follow) => follow.follows.id,
     );
+    return await this.userService.findUsersByIds(alreadyFollowing);
   }
 
   async getPaginatedFollowedByUserListForUser(
@@ -144,8 +149,16 @@ export class FollowsService {
     });
   }
 
-  async unFollow(id: number): Promise<EntityDeletedOutput> {
-    const followRecord: Follow = await this.followRepository.findOne(id);
+  async unFollow(
+    currentUser: User,
+    unfollowId: number,
+  ): Promise<EntityDeletedOutput> {
+    const followRecord: Follow = await this.followRepository.findOne({
+      where: {
+        followed_by: currentUser.id,
+        follows: unfollowId,
+      },
+    });
     if (!followRecord) {
       throw new NotFoundException();
     }
