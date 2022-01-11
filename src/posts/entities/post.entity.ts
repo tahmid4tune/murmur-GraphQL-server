@@ -4,9 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Like } from '../../likes/entities/likes.entity';
 import { User } from '../../users/entities/user.entity';
 
 @Entity()
@@ -23,6 +25,10 @@ export class Post {
   @Column()
   @Field(() => Int, { description: 'Author ID' })
   authorId: number;
+
+  @OneToMany(() => Like, (like) => like.post)
+  @Field(() => [Like], { description: 'Likes on this post' })
+  likes!: Like[];
 
   @Column({ length: 500 })
   @Field()

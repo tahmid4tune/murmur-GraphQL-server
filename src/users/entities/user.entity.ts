@@ -1,7 +1,8 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Exclude, instanceToPlain } from 'class-transformer';
+import { instanceToPlain } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Follow } from '../../follows/entities/follow.entity';
+import { Like } from '../../likes/entities/likes.entity';
 import { Post } from '../../posts/entities/post.entity';
 
 @Entity()
@@ -27,6 +28,9 @@ export class User {
 
   @OneToMany(() => Follow, (follow) => follow.follows)
   followed_by!: Follow[];
+
+  @OneToMany(() => Like, (like) => like.likedBy)
+  likes!: Like[];
 
   toJSON() {
     return instanceToPlain(this);

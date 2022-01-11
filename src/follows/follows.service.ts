@@ -19,7 +19,7 @@ export class FollowsService {
     @InjectRepository(Follow)
     private readonly followRepository: Repository<Follow>,
     private readonly userService: UsersService,
-  ) { }
+  ) {}
 
   async getUsersFollowedByThisUser(user: User): Promise<User[]> {
     const followRecords: Follow[] = await this.followRepository.find({

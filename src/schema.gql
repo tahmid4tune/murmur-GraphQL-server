@@ -16,6 +16,9 @@ type Post {
 
   """Author ID"""
   authorId: Int!
+
+  """Likes on this post"""
+  likes: [Like!]!
   text: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -25,6 +28,19 @@ type Post {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type Like {
+  """Post ID"""
+  id: Int!
+
+  """The liked post"""
+  post: Post!
+
+  """The user who liked the post"""
+  likedBy: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
 
 type User {
   """User ID"""
@@ -122,6 +138,8 @@ type Mutation {
   followUser(id: Int!): Follow!
   unfollowUser(id: Int!): EntityDeletedOutput!
   login(loginUserInput: LoginUserInput!): LoginResponse!
+  likePost(id: Int!): Like!
+  dislikePost(id: Int!): EntityDeletedOutput!
 }
 
 input CreateUserInput {

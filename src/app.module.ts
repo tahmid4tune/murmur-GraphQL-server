@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { FollowsModule } from './follows/follows.module';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -26,7 +27,13 @@ import { FollowsModule } from './follows/follows.module';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      include: [UsersModule, PostsModule, AuthModule, FollowsModule],
+      include: [
+        UsersModule,
+        PostsModule,
+        AuthModule,
+        FollowsModule,
+        LikesModule,
+      ],
       introspection: true,
       context: ({ req }) => ({ headers: req.headers }),
       formatError: (error) => {
@@ -36,6 +43,7 @@ import { FollowsModule } from './follows/follows.module';
     PostsModule,
     AuthModule,
     FollowsModule,
+    LikesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

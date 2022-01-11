@@ -40,7 +40,7 @@ export class PostsService {
     followedUsers.push(user);
     const [posts, count] = await this.postRepository.findAndCount({
       ...getPaginationInfo(paginationInput),
-      relations: ['author'],
+      relations: ['author', 'likes', 'likes.likedBy'],
       where: { authorId: In(followedUsers.map((user) => user.id)) },
       order: { createdAt: 'DESC' },
     });
