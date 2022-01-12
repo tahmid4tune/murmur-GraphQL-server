@@ -11,4 +11,4 @@
 - yarn dev
 
 # clint application code URL
-https://github.com/tahmid4tune/Murmur-GraphQL-client
+https://github.com/tahmid4tune/murmur-GraphQL-client
