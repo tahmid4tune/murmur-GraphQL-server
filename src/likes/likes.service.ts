@@ -23,13 +23,21 @@ export class LikesService {
     if (alreadyLikedPost) {
       return alreadyLikedPost;
     }
-    return await this.likeRepository.save({ likedBy: currentUser, post: post });
+    const like: Like = await this.likeRepository.save({
+      likedBy: currentUser,
+      post: post,
+    });
+    like.likedBy = currentUser;
+    return like;
   }
 
   async findAlreadyLiked(currentUser: User, post: Post): Promise<Like> {
     return await this.likeRepository.findOne({
-      likedBy: currentUser,
-      post: post,
+      where: {
+        likedBy: currentUser,
+        post: post,
+      },
+      relations: ['likedBy'],
     });
   }
 
