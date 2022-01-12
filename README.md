@@ -9,3 +9,6 @@
 
 - yarn install
 - yarn dev
+
+# clint application code URL
+https://github.com/tahmid4tune/insta-mini-client
